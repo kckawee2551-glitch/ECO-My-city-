@@ -22,7 +22,7 @@
         }
         .container {
             width: 100%;
-            max-width: 750px;
+            max-width: 950px;
             background: #ffffff;
             padding: 30px;
             border-radius: 20px;
@@ -35,11 +35,13 @@
             margin-bottom: 5px; 
             font-weight: 600;
             font-size: 28px;
+            text-align: center;
         }
         .subtitle {
             color: #7f8c8d;
             font-size: 15px;
             margin-bottom: 25px;
+            text-align: center;
         }
         .stats {
             display: flex;
@@ -61,12 +63,27 @@
             color: #2c3e50;
             margin-top: 5px;
         }
+
+        /* จัดเลย์เอาต์แผงควบคุมกับบันทึกเหตุการณ์ให้อยู่ข้างกัน */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 10px;
+        }
+        @media (max-width: 768px) {
+            .main-grid {
+                grid-template-columns: 1fr; /* หน้าจอเล็กให้เรียงลงมาเหมือนเดิม */
+            }
+        }
+
         .panel {
-            margin-bottom: 25px;
             padding: 20px;
             border: 1px solid #e9ecef;
             border-radius: 12px;
             background: #fafbfc;
+            display: flex;
+            flex-direction: column;
         }
         .panel h3 {
             margin-top: 0;
@@ -76,22 +93,23 @@
         .button-group {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            margin-bottom: 12px;
+            gap: 10px;
+            margin-bottom: 10px;
         }
         .button-full {
             display: grid;
             grid-template-columns: 1fr;
+            margin-bottom: 10px;
         }
         button {
             font-family: 'Prompt', sans-serif;
             background-color: #27ae60;
             color: white;
             border: none;
-            padding: 12px 10px;
+            padding: 10px 8px;
             border-radius: 8px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 500;
             transition: all 0.2s ease;
             box-shadow: 0 4px 6px rgba(0,0,0,0.05);
@@ -102,6 +120,8 @@
         button.coal:hover { background-color: #c0392b; }
         button.filter-btn { background-color: #2980b9; }
         button.filter-btn:hover { background-color: #2471a3; }
+        button.credit-btn { background-color: #8e44ad; }
+        button.credit-btn:hover { background-color: #732d91; }
         button:disabled { background-color: #bdc3c7; cursor: not-allowed; transform: none; box-shadow: none; }
         
         .log {
@@ -111,7 +131,8 @@
             border-radius: 8px;
             text-align: left;
             font-family: 'Courier New', Courier, monospace;
-            height: 140px;
+            flex-grow: 1;
+            height: 250px;
             overflow-y: auto;
             font-size: 13px;
             line-height: 1.5;
@@ -219,21 +240,27 @@
             </div>
         </div>
 
-        <div class="panel">
-            <h3>🎛️ แผงควบคุมการสร้างโรงไฟฟ้าและระบบ</h3>
-            <div class="button-group">
-                <button id="btn-coal" class="coal" onclick="buildPlant('coal')">🔥 ถ่านหิน (150G)<br><small>+30MW | +15% มลพิษ</small></button>
-                <button id="btn-solar" onclick="buildPlant('solar')">☀️ โซลาร์ (200G)<br><small>+20MW | 0% มลพิษ</small></button>
-                <button id="btn-wind" onclick="buildPlant('wind')">🌬️ กังหันลม (180G)<br><small>+15MW | 0% มลพิษ</small></button>
+        <!-- จัดวางแผงควบคุม และ บันทึกเหตุการณ์ ให้อยู่ข้างกันแบบ 2 คอลัมน์ -->
+        <div class="main-grid">
+            <div class="panel">
+                <h3>🎛️ แผงควบคุมการสร้าง</h3>
+                <div class="button-group">
+                    <button id="btn-coal" class="coal" onclick="buildPlant('coal')">🔥 ถ่านหิน (150G)<br><small>+30MW | +15% มล.</small></button>
+                    <button id="btn-solar" onclick="buildPlant('solar')">☀️ โซลาร์ (200G)<br><small>+20MW | 0% มล.</small></button>
+                    <button id="btn-wind" onclick="buildPlant('wind')">🌬️ กังหันลม (180G)<br><small>+15MW | 0% มล.</small></button>
+                </div>
+                <div class="button-full">
+                    <button id="btn-filter" class="filter-btn" onclick="buildPlant('filter')">🌿 ระบบกรองคาร์บอน (400G)<br><small>ลดมลพิษ 25% | ใช้พลังงาน -10MW</small></button>
+                </div>
+                <div class="button-full">
+                    <button id="btn-credit" class="credit-btn" onclick="buildPlant('credit')">💳 ซื้อ Credit มลพิษ (<span id="credit-cost">1000</span>G)<br><small>ลดมลพิษ 15% | ราคาแพงขึ้นทุกครั้ง</small></button>
+                </div>
             </div>
-            <div class="button-full">
-                <button id="btn-filter" class="filter-btn" onclick="buildPlant('filter')">🌿 ระบบกรองคาร์บอน (400G)<br><small>ลดมลพิษ 25% | ใช้พลังงานขับเคลื่อน -10MW</small></button>
-            </div>
-        </div>
 
-        <div class="panel">
-            <h3>📜 บันทึกเหตุการณ์เมือง</h3>
-            <div id="log" class="log">[ระบบ] ยินดีต้อนรับท่านนายกเทศมนตรี เริ่มต้นพัฒนาเมืองพลังงานสะอาดกันเถอะ!</div>
+            <div class="panel">
+                <h3>📜 บันทึกเหตุการณ์เมือง</h3>
+                <div id="log" class="log">[ระบบ] ยินดีต้อนรับท่านนายกเทศมนตรี เริ่มต้นพัฒนาเมืองพลังงานสะอาดกันเถอะ!</div>
+            </div>
         </div>
     </div>
 
@@ -242,8 +269,9 @@
         let energy = 0;
         let demand = 50;
         let pollution = 0;
+        let creditPrice = 1000; // ราคาเริ่มต้นซื้อ Credit มลพิษ
         let gameActive = true;
-        let afkTimer = 0; // ตัวจับเวลาไม่ได้เล่น (วินาที)
+        let afkTimer = 0; 
         const AFK_LIMIT = 1200; // 20 นาที = 1200 วินาที
 
         function updateUI() {
@@ -251,15 +279,14 @@
             document.getElementById("energy").innerText = energy;
             document.getElementById("demand").innerText = demand;
             document.getElementById("pollution").innerText = pollution + "%";
+            document.getElementById("credit-cost").innerText = creditPrice;
         }
 
-        // แสดงรูปและข้อความอุปสรรคกลางจอ 3 วินาที
         function showObstaclePopup(icon, message) {
             const banner = document.getElementById("obstacle-banner");
             document.getElementById("obstacle-icon").innerText = icon;
             document.getElementById("obstacle-text").innerText = message;
             
-            // รีเซ็ตอนิเมชันโดยการซ่อนแล้วแสดงใหม่
             banner.style.display = "none";
             setTimeout(() => {
                 banner.style.display = "block";
@@ -278,7 +305,7 @@
         }
 
         function resetAfkTimer() {
-            afkTimer = 0; // รีเซ็ตเวลา AFK ทุกครั้งที่มีการกดปุ่มกระทำใดๆ ในเกม
+            afkTimer = 0; 
         }
 
         function buildPlant(type) {
@@ -318,6 +345,16 @@
                     logMessage("🌿 เปิดใช้งานระบบกรองคาร์บอนสำเร็จ! (มลพิษลดลง 25%, เสียพลังงาน 10 MW)", "success");
                 } else {
                     logMessage("⚠️ งบประมาณไม่พอสร้างระบบกรองคาร์บอน (ต้องการ 400G)!", "warning");
+                }
+            } else if (type === 'credit') {
+                if (money >= creditPrice) {
+                    money -= creditPrice;
+                    pollution = Math.max(0, pollution - 15); // ลดมลพิษ 15%
+                    let oldPrice = creditPrice;
+                    creditPrice += 1000; // เพิ่มราคาขึ้นครั้งละ 1,000G ทุกครั้งที่กดซื้อ
+                    logMessage(`💳 ซื้อ Credit มลพิษสำเร็จ ${oldPrice}G (มลพิษลด 15% | ราคาครั้งต่อไป: ${creditPrice}G)`, "success");
+                } else {
+                    logMessage(`⚠️ งบประมาณไม่พอซื้อ Credit มลพิษ (ต้องการ ${creditPrice}G)!`, "warning");
                 }
             }
             updateUI();
@@ -362,16 +399,15 @@
             }
         }
 
-        // ลูปเวลาหลัก (ทุกๆ 1 วินาที สำหรับเช็ค AFK และทุกๆ รอบ 3.5 วินาที สำหรับเหตุการณ์เมือง)
         let gameLoopCounter = 0;
         setInterval(function() {
             if (!gameActive) return;
 
-            afkTimer++; // นับเวลา AFK ทุก 1 วินาที
+            afkTimer++; 
             checkGameStatus();
 
             gameLoopCounter++;
-            if (gameLoopCounter >= 3.5) { // จำลองรอบเวลาเมืองทุกๆ 3.5 วินาที
+            if (gameLoopCounter >= 3.5) { 
                 gameLoopCounter = 0;
 
                 let income = Math.min(energy, demand) * 5;
